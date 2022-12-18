@@ -19,7 +19,7 @@ import { RouterLink, RouterView } from "vue-router";
 
         <RouterLink
             class="text-lg text-secondary hover:text-accent md:text-xl xl:text-2xl"
-            to="/read"
+            :to="{ name: 'read' }"
             >Read</RouterLink
         >
         <RouterLink
@@ -28,11 +28,14 @@ import { RouterLink, RouterView } from "vue-router";
             >Dashboard</RouterLink
         >
     </nav>
-    <RouterView />
+    <Suspense>
+        <RouterView />
+    </Suspense>
 </template>
 
-<style lang="postcss" scoped>
+<style scoped>
 .router-link-exact-active {
-    @apply cursor-default text-accent;
+    cursor: default;
+    color: goldenrod;
 }
 </style>

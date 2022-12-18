@@ -13,29 +13,43 @@ export const useNoteStore = defineStore("note", () => {
     password: null,
   });
 
-
   const write = async (title, content, password) => {
     try {
       const { data } = await axios.post(`${BASE_URL}/notes/create/`, {
         "title": title,
         "content": content,
         "password": password
-      },
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
-          }
-        });
+      });
       [note.value.id, note.value.title, note.value.content, note.value.password] =
         [...Object.values(data), password]
+      return note.value.id
     }
     catch (error) {
       console.log(error);
     }
   };
 
+  const read = async (id, password) => {
+    try {
+      let { data } = await axios.post(`${BASE_URL}/notes/read/`, {
+        "id": id,
+        "password": password
+      });
+      [note.value.id, note.value.title, note.value.content, note.value.password] =
+        [...Object.values(data), password]
+      return note.value.id
+    } catch (error) { return }
+  }
+
+  const reset = () => {
+    note.value.id = ref()
+    note.value.title = ref()
+    note.value.content = ref()
+    note.value.password = ref()
+  }
+
   return {
-    note, write
+    note, write, read, reset
   }
 
 });
