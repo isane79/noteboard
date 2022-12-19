@@ -1,11 +1,10 @@
 <script setup>
-import { onBeforeMount } from "vue";
-import { useRoute } from "vue-router";
-import { storeToRefs } from "pinia";
-import { useNoteStore } from "../stores/note";
-import { ref } from "vue";
-import { computed } from "@vue/reactivity";
 import router from "@/router";
+import { computed } from "@vue/reactivity";
+import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useNoteStore } from "../stores/note";
 
 const noteStore = useNoteStore();
 const { note } = storeToRefs(noteStore);

@@ -10,7 +10,8 @@ export const useNoteStore = defineStore("note", () => {
     id: null,
     title: null,
     content: null,
-    password: null,
+    view: null,
+    password: null
   });
 
   const write = async (title, content, password) => {
@@ -20,13 +21,11 @@ export const useNoteStore = defineStore("note", () => {
         "content": content,
         "password": password
       });
-      [note.value.id, note.value.title, note.value.content, note.value.password] =
+      [note.value.id, note.value.title, note.value.content, note.value.view, note.value.password] =
         [...Object.values(data), password]
       return note.value.id
     }
-    catch (error) {
-      console.log(error);
-    }
+    catch (error) { return }
   };
 
   const read = async (id, password) => {
@@ -35,7 +34,7 @@ export const useNoteStore = defineStore("note", () => {
         "id": id,
         "password": password
       });
-      [note.value.id, note.value.title, note.value.content, note.value.password] =
+      [note.value.id, note.value.title, note.value.content, note.value.view, note.value.password] =
         [...Object.values(data), password]
       return note.value.id
     } catch (error) { return }
@@ -46,6 +45,7 @@ export const useNoteStore = defineStore("note", () => {
     note.value.title = ref()
     note.value.content = ref()
     note.value.password = ref()
+    note.value.view = ref()
   }
 
   return {

@@ -1,7 +1,7 @@
 <script setup>
+import router from "@/router";
 import { storeToRefs } from "pinia";
 import { useNoteStore } from "../stores/note";
-import router from "@/router";
 
 const { note } = storeToRefs(useNoteStore());
 
@@ -39,5 +39,8 @@ const handleShare = async () => {
         >
             Share Link
         </button>
+        <p class="max-w-[320px] p-8 text-center text-xl text-secondary">
+            This note has been seen <b>{{ note.view }}</b> times.
+        </p>
     </div>
 </template>
