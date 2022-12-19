@@ -20,7 +20,7 @@ const submitHandler = async () => {
         content.value,
         password.value
     ))
-        ? router.push({ name: "read" })
+        ? router.push({ name: "note" })
         : alert("server connection failed");
 };
 </script>
@@ -84,7 +84,7 @@ const submitHandler = async () => {
             <span class="uppercase text-accent">Password:</span>
             <input
                 v-model="password"
-                class="block h-10 w-full border-none bg-transparent text-lg  text-neutral outline-none placeholder:italic placeholder:text-secondary"
+                class="block h-10 w-full border-none bg-transparent text-lg text-neutral outline-none placeholder:italic placeholder:text-secondary"
                 type="password"
                 placeholder="set password to access note"
                 autocomplete="off"

@@ -3,29 +3,35 @@ import NoteboardView from '../views/NoteboardView.vue'
 import WriteView from '../views/WriteView.vue'
 import ReadView from '../views/ReadView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import NoteView from '../views/NoteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
       name: 'noteboard',
+      path: '/',
       component: NoteboardView
     }
     ,
     {
-      path: '/write',
       name: 'write',
+      path: '/write',
       component: WriteView
     },
     {
       name: 'read',
-      path: '/read',
+      path: '/read/:id?',
       component: ReadView,
     },
     {
-      path: '/dashboard',
+      name: 'note',
+      path: '/note',
+      component: NoteView,
+    },
+    {
       name: 'dashboard',
+      path: '/dashboard',
       component: DashboardView
     }
   ]

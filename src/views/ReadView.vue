@@ -1,34 +1,36 @@
 <script setup>
+import { onBeforeMount } from "vue";
+import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useNoteStore } from "../stores/note";
 import { ref } from "vue";
 import { computed } from "@vue/reactivity";
+import router from "@/router";
 
 const noteStore = useNoteStore();
 const { note } = storeToRefs(noteStore);
-const id = ref(note.value.id);
+const id = ref(useRoute().params.id);
 const password = ref(note.value.password);
-const isSame = computed(() => {
-    return id.value == note.value.id || id.value.trim().length != 24;
+const isInvalidId = computed(() => {
+    return id.value == null || id.value.trim().length != 24;
 });
+
 const handleRead = async () => {
-    if ((await noteStore.read(id.value, password.value)) == null) {
-        noteStore.reset();
-        alert("Note is expired or password is wrong.");
+    if (isInvalidId.value) {
+        return;
     }
+
+    (await noteStore.read(id.value, password.value)) == null
+        ? alert("Note is expired or password is wrong.")
+        : router.push({ name: "note" });
 };
+
+onBeforeMount(async () => {
+    await handleRead();
+});
 </script>
 
 <template>
-    <h2 v-if="note.title" class="mt-4 text-2xl font-bold text-accent">
-        {{ note.title }}
-    </h2>
-    <p
-        v-if="note.content"
-        class="max-w-[320px] p-8 text-center text-2xl text-secondary"
-    >
-        {{ note.content }}
-    </p>
     <div
         class="mt-8 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-4 text-center"
     >
@@ -59,7 +61,7 @@ const handleRead = async () => {
     <div class="flex w-full flex-wrap justify-center pt-5">
         <button
             @click="handleRead"
-            :disabled="isSame"
+            :disabled="isInvalidId"
             class="text-md h-12 w-32 rounded-lg border-2 border-secondary text-[goldenrod] disabled:opacity-50"
         >
             Read
