@@ -13,9 +13,9 @@ const handleCopy = async () => {
     await navigator.clipboard.writeText(note.value.content);
 };
 const handleShare = async () => {
-    await navigator.clipboard.writeText(
-        `${window.location.origin}/read/${note.value.id}`
-    );
+    var link = `${window.location.origin}/read/${note.value.id}`;
+    if (note.value.password != null) link += "?secure=true";
+    await navigator.clipboard.writeText(link);
 };
 </script>
 

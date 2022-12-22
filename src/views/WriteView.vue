@@ -12,13 +12,15 @@ const submitHandler = async () => {
     // empty content check
     if (content.value === "") return alert("Note Content is Empty!");
     // weak or empty password check
-    if (secure.value && password.value.length < 6)
-        return alert("Password is less than 6 character or Empty!");
+    if (secure.value) {
+        if (password.value.length < 6)
+            return alert("Password is less than 6 character or Empty!");
+    }
     // init store & write then push router on success
     (await useNoteStore().write(
         title.value.trim(),
         content.value,
-        password.value
+        secure.value ? password.value : null
     ))
         ? router.push({ name: "note" })
         : alert("server connection failed");
