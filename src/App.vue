@@ -4,7 +4,7 @@ import { RouterLink, RouterView } from "vue-router";
 
 <template>
     <nav
-        class="my-10 flex w-full max-w-lg justify-center gap-4 sm:gap-14 md:gap-20"
+        class="my-8 flex w-full max-w-lg justify-center gap-4 sm:gap-14 md:gap-20"
     >
         <RouterLink
             class="text-lg text-secondary hover:text-accent md:text-xl xl:text-2xl"

@@ -10,26 +10,43 @@ const { note } = storeToRefs(noteStore);
 const route = useRoute();
 const id = ref(route.params.id);
 const password = ref(note.value.password);
+const invalidId = () => {
+    return id.value == null || id.value.trim().length != 24;
+};
+const invalidPassword = () => {
+    return route.query.secure === "true" && password.value == null;
+};
+const readNote = async () => {
+    switch (await noteStore.read(id.value, password.value)) {
+        case 200:
+            router.push({ name: "note" });
+            break;
+        case 404:
+            alert("ID or password is wrong.");
+            break;
+        case 410:
+            alert("Note is expired.");
+            break;
+        default:
+            alert("something went wrong!");
+    }
+};
 const handleRead = async () => {
-    if (id.value == null || id.value.trim().length != 24)
-        return alert("ID is invalid!");
-    if (route.query.secure === "true" && password.value == null)
-        return alert("Password is empty!");
-    (await noteStore.read(id.value, password.value)) == null
-        ? alert("Note is expired or password is wrong.")
-        : router.push({ name: "note" });
+    if (invalidId()) return alert("ID is invalid!");
+    if (invalidPassword()) return alert("Password is empty!");
+    readNote();
 };
 
-onBeforeMount(async () => {
-    if (route.query.secure !== "true") {
-        await handleRead();
+onBeforeMount(() => {
+    if (route.query.secure !== "true" && !invalidId()) {
+        readNote();
     }
 });
 </script>
 
 <template>
     <div
-        class="mt-8 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-4 text-center"
+        class="mt-5 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-4 text-center"
     >
         <span class="uppercase text-accent">ID:</span>
         <input
