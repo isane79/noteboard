@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import router from "@/router";
 import { useNoteStore } from "../stores/note";
 
@@ -7,6 +7,10 @@ const title = ref("");
 const secure = ref(false);
 const password = ref("");
 const content = ref("");
+const day = ref(0);
+const hour = ref(0);
+const hasDay = computed(() => ({ "text-neutral": day.value != 0 }));
+const hasHour = computed(() => ({ "text-neutral": hour.value != 0 }));
 
 const submitHandler = async () => {
     // empty content check
@@ -17,13 +21,22 @@ const submitHandler = async () => {
             return alert("Password is less than 6 character or Empty!");
     }
     // init store & write then push router on success
-    (await useNoteStore().write(
-        title.value.trim(),
-        content.value,
-        secure.value ? password.value : null
-    ))
-        ? router.push({ name: "note" })
-        : alert("server connection failed");
+    switch (
+        await useNoteStore().write(
+            title.value.trim(),
+            content.value,
+            secure.value ? password.value : null,
+            day.value != 0 || hour.value != 0
+                ? day.value * 24 + hour.value
+                : null
+        )
+    ) {
+        case 200:
+            router.push({ name: "note" });
+            break;
+        default:
+            alert("something went wrong!");
+    }
 };
 </script>
 
@@ -32,6 +45,7 @@ const submitHandler = async () => {
         @submit.prevent="submitHandler"
         class="flex max-w-lg flex-col items-center justify-center"
     >
+        <!--note title-->
         <div
             class="mt-5 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-4"
         >
@@ -45,11 +59,25 @@ const submitHandler = async () => {
                 maxlength="30"
             />
         </div>
+        <!--note content-->
+        <div
+            class="mt-5 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-5"
+        >
+            <span class="uppercase text-accent">Note Content:</span>
+            <textarea
+                v-model="content"
+                class="block w-full border-none bg-transparent text-lg text-neutral outline-none placeholder:italic placeholder:text-secondary"
+                name="note"
+                rows="5"
+                placeholder="text note..."
+            ></textarea>
+        </div>
+        <!--access via-->
         <div
             class="mt-5 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-5"
         >
             <span class="uppercase text-accent">Access via:</span>
-            <div class="flex items-center justify-center gap-6 py-2">
+            <div class="flex items-center justify-around gap-6 py-2">
                 <input
                     class="input-radio hidden"
                     id="radio1"
@@ -79,6 +107,7 @@ const submitHandler = async () => {
                 >
             </div>
         </div>
+        <!--password-->
         <div
             v-show="secure"
             class="mt-5 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-5"
@@ -93,19 +122,32 @@ const submitHandler = async () => {
                 maxlength="30"
             />
         </div>
+        <!--expire after-->
         <div
             class="mt-5 min-w-[16rem] rounded-lg border-2 border-secondary py-2 px-5"
         >
-            <span class="uppercase text-accent">Note Content:</span>
-            <textarea
-                v-model="content"
-                class="block w-full border-none bg-transparent text-lg text-neutral outline-none placeholder:italic placeholder:text-secondary"
-                name="note"
-                rows="5"
-                placeholder="text note..."
-            ></textarea>
+            <span class="uppercase text-accent">expire after</span>
+            <div class="flex justify-around">
+                <span class="uppercase text-accent">day:</span>
+                <input
+                    :class="hasDay"
+                    v-model="day"
+                    class="block w-8 border-none bg-transparent text-lg text-secondary outline-none placeholder:italic placeholder:text-secondary"
+                    type="number"
+                    oninput="this.value=this.value.slice(0,3)"
+                />
+                <span class="uppercase text-accent">hour:</span>
+                <input
+                    :class="hasHour"
+                    v-model="hour"
+                    class="block w-8 border-none bg-transparent text-lg text-secondary outline-none placeholder:italic placeholder:text-secondary"
+                    type="number"
+                    oninput="this.value=this.value.slice(0,3)"
+                />
+            </div>
         </div>
-        <div class="flex w-full flex-wrap justify-center pt-5">
+        <!--button-->
+        <div class="flex w-full flex-wrap justify-center p-5">
             <button
                 class="text-md h-12 w-32 rounded-lg border-2 border-secondary text-[goldenrod]"
             >
@@ -163,5 +205,16 @@ input:-webkit-autofill:active {
 
 .input-radio:checked + .label-radio::after {
     display: block;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 </style>
