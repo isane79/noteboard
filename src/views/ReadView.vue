@@ -11,7 +11,7 @@ const route = useRoute();
 const id = ref(route.params.id);
 const password = ref(note.value.password);
 const invalidId = () => {
-    return id.value == null || id.value.trim().length != 24;
+    return id.value == null || id.value.trim().length != 10;
 };
 const invalidPassword = () => {
     return route.query.secure === "true" && password.value == null;

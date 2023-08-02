@@ -20,10 +20,10 @@ const handleShare = async () => {
 </script>
 
 <template>
-    <h2 class="mt-4 text-center text-xl font-bold text-accent">
+    <h2 dir="rtl" class="mt-4 text-center text-xl font-bold text-accent">
         {{ note.title }}
     </h2>
-    <p class="max-w-[320px] break-words p-8 text-center text-xl text-neutral">
+    <p dir="rtl" class="max-w-[320px] break-words p-8 text-center text-xl text-neutral">
         {{ note.content }}
     </p>
     <div class="flex w-[320px] flex-wrap justify-evenly pt-5">
